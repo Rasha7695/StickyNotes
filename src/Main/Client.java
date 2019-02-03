@@ -11,9 +11,28 @@ public class Client {
         int port = new Scanner(System.in).nextInt();
         Socket socket = new Socket(serverAddress, port);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            System.out.println("Main.Server response: " + response);
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        out.println("Welcome Server!");
+        String message = "";
+        try{
+            while(true){
+                String response=in.readLine();
+                System.out.println("Server response: " + response);
+                message = new Scanner(System.in).nextLine();
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(message);
+            if(message.equals("DISCONNECT")){
+                socket.close();
+                
+            }
+            }
+        } catch(IOException e){
+            if(message.equals("DISCONNECT")){
+                System.out.println("Disconnected");
+            }
+            else{
+                System.out.println("Server shutdown.");
+                socket.close();
+            }  
+        }
+        
     }
 }
