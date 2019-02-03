@@ -1,7 +1,6 @@
 package Main;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,12 +16,12 @@ class ConnectionHandler implements Runnable{
         PrintWriter out = null;
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out.println("Welcome Rasha!");
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String response = in.readLine();
+            System.out.println("Main.Server response: " + response);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        out.println("Welcome Rasha!");
-        while(true){
-            out.println("Welcome Rasha!");
         }
     }
 }

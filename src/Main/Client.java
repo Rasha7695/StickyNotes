@@ -1,6 +1,5 @@
 package Main;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Scanner;
@@ -12,8 +11,9 @@ public class Client {
         int port = new Scanner(System.in).nextInt();
         Socket socket = new Socket(serverAddress, port);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        while(true){
-        String response = in.readLine();
-        System.out.println("Main.Server response: " + response);}
+            String response = in.readLine();
+            System.out.println("Main.Server response: " + response);
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        out.println("Welcome Server!");
     }
 }
