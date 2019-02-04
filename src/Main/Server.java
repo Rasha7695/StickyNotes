@@ -42,6 +42,7 @@ class ConnectionHandler implements Runnable{
             break;
 
             case "DISCONNECT":
+            out.println("client disconnected");
             clientSocket.close();
             break;
 

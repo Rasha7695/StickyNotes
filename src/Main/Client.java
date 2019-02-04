@@ -21,7 +21,7 @@ public class Client extends JFrame implements ActionListener {
     JLabel lblPort;
     JTextField txtAddress;
     JTextField txtPort;
-    JButton btnProcess;
+    JButton send;
     JToggleButton connectDisconnect;
     JTextArea txtS;
     Socket socket;
@@ -47,12 +47,13 @@ public class Client extends JFrame implements ActionListener {
         add(lblPort);
 
         txtPort = new JTextField();
-        txtPort.setBounds(105, 35, 90, 21);
+        txtPort.setBounds(105, 35, 90, 20);
         add(txtPort);
-    //     btnProcess = new JButton("Process");
-    //     btnProcess.setBounds(200, 40, 90, 21);
-    //    btnProcess.addActionListener(this);
-    //    add(btnProcess);
+
+        send = new JButton("Send");
+        send.setBounds(200, 20, 90, 20);
+        send.addActionListener(this);
+        add(send);
 
         connectDisconnect = new JToggleButton("Connect");
         connectDisconnect.setBounds(200, 40, 90, 21);
@@ -68,15 +69,17 @@ public class Client extends JFrame implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        // if (e.getSource().equals(btnProcess)) {
-        //     try {
-        //         processInformation();
-        //     } catch (UnknownHostException e1) {
-        //         e1.printStackTrace();
-        //     } catch (IOException e1) {
-        //         e1.printStackTrace();
-        //     }
-        // }
+        if(e.getSource().equals(send)){
+            try{
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(txtS.getText());
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
+            String response=in.readLine();
+            txtS.setText("Server's response: "+response);
+            }catch(IOException e1){
+                txtS.setText("Invalid request");
+            }
+        }
         if (e.getSource().equals(connectDisconnect)) {
             if (connectDisconnect.isSelected()){
                 try{
@@ -103,10 +106,7 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    
 
-    
-    
     public void processInformation() throws UnknownHostException, IOException {
 
         String serverAddress = txtAddress.getText();
@@ -114,12 +114,6 @@ public class Client extends JFrame implements ActionListener {
         try{
             socket = new Socket(serverAddress, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
-      //  ObjectOutputStream p = new ObjectOutputStream(socket.getOutputStream());
-        
-        
-       // p.writeObject("hi babe");
-       // p.flush();
-
         // Here we read the details from server
         String response=in.readLine();
         txtS.setText("The server respond: " + response);
@@ -128,10 +122,6 @@ public class Client extends JFrame implements ActionListener {
                 socket.close();
         }
       
-        // p.close();
-        // response.close();
-        // socket.close();
- 
     }
 
     public static void main(String[] args) throws IOException {
