@@ -1,10 +1,12 @@
-package Main;
+package networksA1;
+
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+
 
 class ConnectionHandler implements Runnable{
     private final Socket clientSocket;
@@ -128,18 +130,19 @@ public class Server {
             System.out.println("The Main.Server is running");
             Socket clientSocket = null;
             while (true) {
-                try{
                     clientSocket = serverSocket.accept();
                     new Thread(new ConnectionHandler(clientSocket,board)).start();
                     System.err.println("Accepted a client from: "+clientSocket.getInetAddress());
-                } catch (IOException e) {
-                    System.err.println("Failed to accept a connection");
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Cannot open socket on port"+port);
-            e.printStackTrace();
-        }
-    }
+                    ObjectInputStream b = new ObjectInputStream(clientSocket.getInputStream());
+                    PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
+                  
+                 
+                  
+                    output.println("hola chica");
+                    b.close();
+                    output.close();
+                    clientSocket.close(); }
+          
+        }catch(IOException e){
+	e.printStackTrace();}}
 }
