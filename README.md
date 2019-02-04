@@ -4,4 +4,4 @@
 - *PIN/UNPIN* buttons with dialogue for coordinates + function to process them 
 - *GET* button with dialogue for Color / Coordinates / Message + function to process
 - Clear Button
-- Add Disconnect/Connect Toggle Button
+- Return Board and note to server.java 'cause we can only submit two files.

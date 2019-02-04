@@ -1,4 +1,4 @@
-package networksA1;
+package Main;
 
 
 import java.io.*;
@@ -65,7 +65,7 @@ class ConnectionHandler implements Runnable{
                 out.println(response);
             }
         } catch(SocketException e){
-            System.out.println("Clinet Disconnected");
+            System.out.println("Client Disconnected");
         }catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,19 +130,17 @@ public class Server {
             System.out.println("The Main.Server is running");
             Socket clientSocket = null;
             while (true) {
+                try{
                     clientSocket = serverSocket.accept();
                     new Thread(new ConnectionHandler(clientSocket,board)).start();
                     System.err.println("Accepted a client from: "+clientSocket.getInetAddress());
-                    ObjectInputStream b = new ObjectInputStream(clientSocket.getInputStream());
-                    PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
-                  
-                 
-                  
-                    output.println("hola chica");
-                    b.close();
-                    output.close();
-                    clientSocket.close(); }
-          
-        }catch(IOException e){
-	e.printStackTrace();}}
+                } catch (IOException e) {
+                    System.err.println("Failed to accept a connection");
+                }
+            }
+     } catch(IOException e){
+
+     }
+    }
 }
+
