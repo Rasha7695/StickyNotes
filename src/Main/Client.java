@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JOptionPane;
+
 
 
 
@@ -25,6 +27,10 @@ public class Client extends JFrame implements ActionListener {
     JToggleButton connectDisconnect;
     JTextArea txtS;
     Socket socket;
+    JButton getButton;
+    JButton pinButton;
+    JButton unpinButton;
+
 
     public Client() {
         socket = null;
@@ -50,7 +56,7 @@ public class Client extends JFrame implements ActionListener {
         txtPort.setBounds(105, 35, 300, 20);
         add(txtPort);
 
-        send = new JButton("Send");
+        send = new JButton("Post");
         send.setBounds(450, 10, 90, 20);
         send.addActionListener(this);
         add(send);
@@ -59,6 +65,21 @@ public class Client extends JFrame implements ActionListener {
         connectDisconnect.setBounds(450, 40, 90, 21);
         connectDisconnect.addActionListener(this);
         add(connectDisconnect);
+
+        getButton = new JButton("GET");
+        getButton.setBounds(450, 70, 90, 21);
+        getButton.addActionListener(this);
+        add(getButton);
+
+        pinButton = new JButton("PIN");
+        pinButton.setBounds(450, 100, 90, 21);
+        pinButton.addActionListener(this);
+        add(pinButton);
+
+        unpinButton = new JButton("UNPIN");
+        unpinButton.setBounds(450, 130, 90, 21);
+        unpinButton.addActionListener(this);
+        add(unpinButton);
 
         txtS = new JTextArea();
         txtS.setBounds(10, 85, 400, 200);
@@ -69,6 +90,87 @@ public class Client extends JFrame implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(getButton)) {
+    		getButton.addActionListener(new ActionListener () {
+        		public void actionPerformed(ActionEvent arg0) {
+        			 String selection = JOptionPane.showInputDialog(getButton, "Enter GET request:"); 
+                     try{
+                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                        out.println(selection);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
+                        String response=in.readLine();
+                        String[] responses = response.split("-");
+                        txtS.setText("");
+                        if(responses.length>1){
+                        for(int i=1;i<responses.length;i++){
+                            txtS.append(i+")"+responses[i]+"\n");
+                        }
+                    }
+                    else{
+                        txtS.setText(response);
+                    }
+                        }catch(IOException e1){
+                            txtS.setText("Invalid request");
+                        }    
+                    
+                    }
+        	});
+    		
+        }
+        if (e.getSource().equals(pinButton)) {
+    		pinButton.addActionListener(new ActionListener () {
+        		public void actionPerformed(ActionEvent arg0) {
+        			 String selection = JOptionPane.showInputDialog(pinButton, "Enter PIN request:"); 
+                     try{
+                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                        out.println(selection);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
+                        String response=in.readLine();
+                        String[] responses = response.split("-");
+                        txtS.setText("");
+                        if(responses.length>1){
+                        for(int i=1;i<responses.length;i++){
+                            txtS.append(i+")"+responses[i]+"\n");
+                        }
+                    }
+                    else{
+                        txtS.setText(response);
+                    }
+                        }catch(IOException e1){
+                            txtS.setText("Invalid request");
+                        }    
+                    
+                    }
+        	});
+    		
+        }
+        if (e.getSource().equals(unpinButton)) {
+    		unpinButton.addActionListener(new ActionListener () {
+        		public void actionPerformed(ActionEvent arg0) {
+        			 String selection = JOptionPane.showInputDialog(unpinButton, "Enter UNPIN request:"); 
+                     try{
+                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                        out.println(selection);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
+                        String response=in.readLine();
+                        String[] responses = response.split("-");
+                        txtS.setText("");
+                        if(responses.length>1){
+                        for(int i=1;i<responses.length;i++){
+                            txtS.append(i+")"+responses[i]+"\n");
+                        }
+                    }
+                    else{
+                        txtS.setText(response);
+                    }
+                        }catch(IOException e1){
+                            txtS.setText("Invalid request");
+                        }    
+                    
+                    }
+        	});
+    		
+    	}
         if(e.getSource().equals(send)){
             try{
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
