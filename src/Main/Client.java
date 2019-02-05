@@ -29,7 +29,7 @@ public class Client extends JFrame implements ActionListener {
     public Client() {
         socket = null;
         this.setTitle("Simple Sample");
-        this.setSize(320, 240);
+        this.setSize(600, 400);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
         
@@ -39,7 +39,7 @@ public class Client extends JFrame implements ActionListener {
         add(lblAddress);
 
         txtAddress = new JTextField();
-        txtAddress.setBounds(105, 10, 90, 21);
+        txtAddress.setBounds(105, 10, 300, 21);
         add(txtAddress);
 
         lblPort = new JLabel("Port: ");
@@ -47,21 +47,21 @@ public class Client extends JFrame implements ActionListener {
         add(lblPort);
 
         txtPort = new JTextField();
-        txtPort.setBounds(105, 35, 90, 20);
+        txtPort.setBounds(105, 35, 300, 20);
         add(txtPort);
 
         send = new JButton("Send");
-        send.setBounds(200, 20, 90, 20);
+        send.setBounds(450, 10, 90, 20);
         send.addActionListener(this);
         add(send);
 
         connectDisconnect = new JToggleButton("Connect");
-        connectDisconnect.setBounds(200, 40, 90, 21);
+        connectDisconnect.setBounds(450, 40, 90, 21);
         connectDisconnect.addActionListener(this);
         add(connectDisconnect);
 
         txtS = new JTextArea();
-        txtS.setBounds(10, 85, 290, 120);
+        txtS.setBounds(10, 85, 400, 200);
         add(txtS);
 
         this.setVisible(true);
@@ -75,7 +75,16 @@ public class Client extends JFrame implements ActionListener {
             out.println(txtS.getText());
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
             String response=in.readLine();
-            txtS.setText("Server's response: "+response);
+            String[] responses = response.split("-");
+            txtS.setText("");
+            if(responses.length>1){
+            for(int i=1;i<responses.length;i++){
+                txtS.append(i+")"+responses[i]+"\n");
+            }
+        }
+        else{
+            txtS.setText(response);
+        }
             }catch(IOException e1){
                 txtS.setText("Invalid request");
             }
@@ -85,7 +94,6 @@ public class Client extends JFrame implements ActionListener {
                 try{
                     processInformation();
                     connectDisconnect.setText("Disconnect");
-                    txtS.setText("Connected to server: Enter your request here.");
                 } catch(IOException e1){
                     txtS.setText("Invalid IP or port");
                 }
@@ -115,13 +123,16 @@ public class Client extends JFrame implements ActionListener {
             socket = new Socket(serverAddress, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));   
         // Here we read the details from server
-        String response=in.readLine();
-        txtS.setText("The server respond: " + response);
+        String response1 = in.readLine();
+        String response2 = in.readLine();
+        txtS.setText("Connected to the server.\n");
+        txtS.append(response1+"\n");
+        txtS.append(response2+"\n");
+        txtS.append("Delete all the above, type your request then hit send.");
         } catch(IOException e){
                 txtS.setText("Server shutdown.");
                 socket.close();
         }
-      
     }
 
     public static void main(String[] args) throws IOException {

@@ -19,41 +19,48 @@ class ConnectionHandler implements Runnable{
     }
 
     public String pin(String str){
-        String response = "invalid request";
-        String[] request = str.split(" ");
-        if(request.length!=2){
-            return response;
+        String[] request = str.split(" ",3);
+        if(request.length!=3){
+            return "invalid request";
         }
-        int x = Integer.parseInt(request[0]);
-        int y = Integer.parseInt(request[1]);
+        int x = Integer.parseInt(request[1]);
+        int y = Integer.parseInt(request[2]);
         for(int i=0;i<board.notes.size();i++){
             Note note = board.notes.get(i);
             if(note.containsX(x) && note.containsY(y)){
-                note.addPin();
+                board.notes.get(i).addPin();
             }
         }
-        return response;
+        board.pins.add(new Pin(x,y));
+        return "Success";
     }
 
     public String unpin(String str){
-        String response = "invalid request";
-        String[] request = str.split(" ");
-        if(request.length!=2){
-            return response;
+        String[] request = str.split(" ",3);
+        if(request.length!=3){
+            return "invalid request";
         }
-        int x = Integer.parseInt(request[0]);
-        int y = Integer.parseInt(request[1]);
+        int x = Integer.parseInt(request[1]);
+        int y = Integer.parseInt(request[2]);
         Pin p = new Pin(x,y);
-        if(!board.pins.contains(p)){
+        boolean NoPinMatch = true;
+        for(int i=0;i<board.pins.size();i++){
+            if(board.pins.get(i).equals(p)){
+                NoPinMatch = false;
+                break;
+            }
+        }
+        if(NoPinMatch){
             return "This pin doesn't exist.";
         }
         for(int i=0;i<board.notes.size();i++){
             Note note = board.notes.get(i);
             if(note.containsX(x) && note.containsY(y)){
-                note.removePin();
+                board.notes.get(i).removePin();
             }
         }
-        return response;
+        board.pins.remove(p);
+        return "Success";
     }
 
     public String clear(String str){
@@ -105,7 +112,8 @@ class ConnectionHandler implements Runnable{
         String response = "";
         for(int i=0;i<board.notes.size();i++){
             if(board.notes.get(i).isPinned()){
-                response+="*"+board.notes.get(i).getMessage()+"\n";
+               // response = "yey";
+                response+="-"+board.notes.get(i).getMessage();
             }
         }
         if(response.length()==0){
@@ -124,6 +132,9 @@ class ConnectionHandler implements Runnable{
         } else{
         request = str.split(" ",5);
         ArrayList<Note> requestedNotes = new ArrayList<Note>();
+        if(board.notes.size()==0){
+            return "No notes on the board.";
+        }
         for(int i=0;i<board.notes.size();i++){
             Note note = board.notes.get(i);
             if(!request[1].equals("ALL")){
@@ -167,6 +178,12 @@ class ConnectionHandler implements Runnable{
         }
         if(requestedNotes.size()==0){
             response = "No notes match your request.";
+        }
+        else{
+            response="";
+            for(int i=0;i<requestedNotes.size();i++){
+                response+="-"+requestedNotes.get(i).getMessage();
+            }
         }
     }
 
@@ -219,12 +236,15 @@ class ConnectionHandler implements Runnable{
         PrintWriter out = null;
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
-            out.println(board.colors);
+            String res = "Board Dimensions: "+board.width+", "+board.height+".";
+            out.println(res);
+            res = "Colors: "+board.colors;
+            out.println(res);
             while(true){
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String response = in.readLine();
                 this.StringProcessing(response,out);
-                out.println(response);
+              // out.println(response);
             }
         } catch(SocketException e){
             System.out.println("Client Disconnected");
@@ -321,7 +341,7 @@ class Board {
         colors.add(color);
     }
     void AddNote(Note note){
-
+        notes.add(note);
     }
 }
 
