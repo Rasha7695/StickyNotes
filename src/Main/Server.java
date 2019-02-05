@@ -70,7 +70,37 @@ class ConnectionHandler implements Runnable{
         } 
         return "Unpinned notes removed.";
     }
+ public String post(String str){
+        String[] postStr = str.split(" ",7);
+        String response=" ";
+        if (postStr.length<7) {
+        	return "Your POST request is missing field(s), please try again.";	
+        }  
+        Note postNote = new Note(Integer.parseInt(postStr[1]), Integer.parseInt(postStr[2]), Integer.parseInt(postStr[3]), Integer.parseInt(postStr[4]),postStr[5],postStr[6]);
+        
+        if (postNote.x > board.width || postNote.y > board.height ) {
+        	return  "your note is out of bound, try again.";
+        }
+        if (postNote.w > board.width || postNote.h > board.height) {
+        	return "Your note is too big, try again";
+        }
+        if (postNote.w + postNote.x >board.width || postNote.h + postNote.y > board.height  ) {
+        	return "Your note is too big, try again";
+        }
 
+        if (postNote.message.length()>100) {
+        	return "Your Text Message needs to be shorter than 100 characters.";
+        }
+        
+        if (!board.colors.contains(postStr[5])) { 
+        	return "There is no such color, try again.";
+        }
+        
+        else {
+        	board.AddNote(postNote); 
+        	return "Added to post successfully";
+        }
+}
     public String getPinned(){
         String response = "";
         for(int i=0;i<board.notes.size();i++){
@@ -152,7 +182,8 @@ class ConnectionHandler implements Runnable{
             break;
 
             case "POST":
-
+                 response = post(str);
+                out.println(response);
             break;
 
             case "PIN":
